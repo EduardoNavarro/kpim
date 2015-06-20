@@ -1,0 +1,118 @@
+<dom-module id="product-add"><template><style>    
+      :host {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        overflow:auto;
+        /*font-size:0.3em;*/
+      }
+
+      layout vertical paper-toggle-button {
+        padding-left: 30px;
+      }
+      paper-toggle-button.bluetooth::shadow [checked] .toggle-ink {
+        color: rgb(66, 133, 244);
+      }
+      paper-toggle-button.bluetooth::shadow [checked] .toggle {
+        background-color: rgb(66, 133, 244);
+      }
+      
+      .dual {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        width:100%;
+      }
+      
+      .dual > div {
+          padding-right:50px;
+      }
+      
+      paper-toggle-button {
+        padding: 16px;
+        float:left;
+      }
+      paper-toggle-button.bluetooth::shadow [checked] .toggle-ink {
+        color: rgb(66, 133, 244);
+      }
+      paper-toggle-button.bluetooth::shadow [checked] .toggle {
+        background-color: rgb(66, 133, 244);
+      }
+
+      paper-button.create {
+        width: 30%;
+        color: rgb(66, 133, 244);
+      }
+      paper-button[raised].create {
+        color: rgb(255, 255, 255);
+        background: rgb(76, 175, 80);
+      }
+      paper-button.cancel {
+        width: 30%;
+        color: rgb(66, 250, 244);
+      }
+      paper-button[raised].cancel {
+        color: rgb(255, 255, 255);
+        background: rgb(66, 133, 244);
+      }
+      .button-command {
+        padding-top: 50px;
+        width: 100%;
+      }
+      #button-create {
+        background-color: rgb(80, 173, 126);
+      }
+
+      html /deep/ paper-dropdown-menu {
+        box-sizing: border-box;
+        /*width: 280px;*/
+        float:right;
+      }
+
+      
+      paper-input {
+         width: 100%;
+      }
+      
+      .form {
+        /*width: 60%;*/
+        padding-right:5%;
+        padding-left:5%;
+        padding-bottom:5%;
+      }
+      
+      
+      paper-fab {
+        position: fixed;
+        bottom: 16px;
+        right: 16px;
+        background-color: #ff4081;
+      }
+      
+    </style><section class="form" layout="" vertical="" center=""><paper-input value="{{product.code}}" label="Código" floatinglabel="" id="paper_input">{{products}}</paper-input><paper-input value="{{product.description}}" label="Descripción" floatinglabel="" id="paper_input1"></paper-input><paper-input value="{{product.presentation}}" label="Presentación" floatinglabel="" id="paper_input2"></paper-input><div class="dual" horizontal="" layout=""><div layout="" horizontal="" center="">Tipo de producto</div></div><paper-input value="{{product.buyPrice}}" label="Precio de compra" floatinglabel=""></paper-input><paper-input value="{{product.sellPrice}}" label="Precio de venta" floatinglabel=""></paper-input><paper-input value="{{product.suggestedPrice}}" label="Precio de sugerido" floatinglabel=""></paper-input><paper-input value="{{product.stock}}" label="Stock" floatinglabel=""></paper-input><div class="dual" center="" horizontal="" layout=""><div>habilitado?</div><paper-toggle-button checked="" id="paper_toggle_button" class="bluetooth" touch-action="pan-y"></paper-toggle-button></div><a href="#product-crud"><paper-fab icon="check" role="button" noink="" on-tap="insertOrUpdateProduct"></paper-fab></a></section></template><script>
+
+       Polymer({is:"product-add",
+		    properties: {
+		      product:''
+		    },
+
+		    insertOrUpdateProduct : function(event, detail, sender) {
+		      console.log("Product to insert " + this.product.description);
+		      if(this.product.id != null) {
+		        this.updateProduct(this.product);
+		      } else {
+		        this.insertProduct(this.product);
+		      }
+		    },
+
+		    updateProduct: function (product) {
+		      console.log("Calling WS to UPDATE product : " + JSON.stringify(product));
+		    },
+
+		    insertProduct : function(product) {
+		      console.log("Calling WS to INSERT product: " + JSON.stringify(product));
+		    }
+		    
+		  });
+
+  </script></dom-module>

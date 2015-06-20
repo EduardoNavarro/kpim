@@ -1,0 +1,21 @@
+<dom-module id="product-type-crud"><template><div list=""><template is="dom-repeat" items="[[producttypes]]" as="producttype" id="prtList"><product-type-card producttype="[[producttype]]" on-tap="openDetail"></product-type-card></template></div><a data-route="product-type-form" href="/product-type-form/1"><paper-fab paperfab="" class="fab" icon="add"></paper-fab></a></template><script>
+
+	Polymer({
+		is: 'product-type-crud',
+		properties: {
+			authToken: "",
+			producttypes: Object
+		},
+
+		ready: function(){
+			//this.$.productTypeService.getAll("a1d87ef7-da8e-4642-ba74-bca29b3670d2");
+		},
+		openDetail: function(e){
+			this.$.prtList.itemForElement(e.target);
+			page.redirect('/product-type-form/' + this.$.prtList.itemForElement(e.target).id);
+
+			//page.redirect('/product-type-form/' + JSON.stringify(this.$.prtList.itemForElement(e.target)));
+
+		}
+	});
+	</script></dom-module>

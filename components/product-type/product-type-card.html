@@ -1,0 +1,65 @@
+<dom-module id="product-type-card"><style>
+
+    :host {
+      @apply(--layout-horizontal);
+    }
+
+    [item-l] {
+      padding-left: 16px;
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+      @apply(--papercard);
+      @apply(papercard);
+      border-bottom: 1px solid #bbb;
+    }
+
+    [item] {
+      padding-left: 16px;
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+    }
+
+    [vertical] {
+      @apply(--layout-flex);
+      @apply(--layout-vertical);
+    }
+
+    [horizontal] {
+      @apply(--layout-horizontal);
+    }
+
+    [flex] {
+      @apply(--layout-flex);
+    }
+
+    [content] {
+      @apply(--layout-flex);
+      overflow: auto;
+    }
+
+    [circle] {
+        @apply(--layout-vertical);
+        @apply(--layout-center-center);
+    }
+
+    [enabled] {
+      background-color: var(--enabled-item-color);
+    }
+
+    [disabled] {
+      background-color: var(--disabled-item-color);
+    }
+
+  </style><template><paper-material papercard="" elevation="1"><div horizontal=""><template is="dom-if" if="[[producttype.enable]]" restamp="true"><div circle="" enabled="">[[producttype.name]]</div></template><template is="dom-if" if="[[!producttype.enable]]" restamp="true"><div circle="" disabled="">[[producttype.name]]</div></template><div item="" flex="" on-tap="ready">[[producttype.description]]</div></div></paper-material></template><script>
+  Polymer({
+    is: 'product-type-card',
+
+    properties: {
+        producttype: Object,
+    }, 
+    ready: function(){
+      //console.log(this.producttype);
+    }
+  });
+
+</script></dom-module>

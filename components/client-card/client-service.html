@@ -1,0 +1,53 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html"><link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html"><template><iron-ajax id="ajaxPullWebService" method="[[method]]" url="[[fullUrl]]" params="[[params]]" handle-as="json" last-response="{{wsdata}}" on-response="onResponse"></iron-ajax><iron-ajax id="ajaxPushWebService"></iron-ajax></template><script>
+  Polymer({
+    is: 'client-service', 
+    properties: {
+      url:'http://localhost:8080/KinderPharmaServer/WebServices/',
+      method: String, 
+      webService: String,
+      wsdata:{
+        type: Object,
+        notify: true
+      },
+      params: Object, 
+      fullUrl: {
+        type: String,
+        computed: 'computeFullUrl(url, webService)'
+      }
+    },
+    ready: function(){
+      console.log("Entering client-service. URL: " + this.url);
+    },
+    computeFullUrl: function(url, webService) {
+      return url + webService;
+    },
+    onResponse: function(request) {
+      console.log("Response : " + JSON.stringify(this.wsdata));
+    },
+    save: function (client) {
+      console.log("ENTERING - saveClient");
+      console.warn("user service user to insert: " + JSON.stringify(client));
+      this.$.ajaxPushWebService.params.client = JSON.stringify(client);
+      
+      this.$.ajaxPushWebService.method = "POST";
+      this.$.ajaxPushWebService.url = "http://localhost:8080/KinderPharmaServer/WebServices/saveClient";
+      console.log("READY FOR CALL: " + this.fullUrl);
+
+      this.$.ajaxPushWebService.generateRequest();
+      //Ejemplo pseudo (verificar nombreds de metodos)
+      //this.$.ajax.url = this.computeFullUrl(this.url, "saveObjectWS");
+      //this.$.ajax.method = "POST"
+      //this.$.ajax.body = JSON.stringify(object);
+      //this.$.ajax.generateRequest();
+    },
+    getAll: function(){
+      console.log("ENTERING - getAllClients");
+      this.url ="http://localhost:8080/KinderPharmaServer/WebServices/";
+      this.webService = "getClients";
+      this.method = "GET";
+      console.log("READY FOR CALL: " + this.fullUrl);
+      this.$.ajaxPullWebService.generateRequest();
+      
+    }
+  });
+</script>

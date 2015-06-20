@@ -1,0 +1,138 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html"><link rel="import" href="../../../../bower_components/iron-ajax/iron-ajax.html"><link rel="import" href="../../../../bower_components/iron-localstorage/iron-localstorage.html"><dom-module id="auth-service"><template><iron-ajax id="ajax" handle-as="json" last-response="{{wsdata}}" on-response="onResponse" on-error="onError"></iron-ajax><iron-localstorage id="authStorage" name="auth-localstorage"></iron-localstorage></template></dom-module><script>
+
+    var GRANT_TYPE_REFRESH_TOKEN = "refresh_token";
+    var GRANT_TYPE_PASSWORD = "password";
+    var WS_METHOD_POST = "post";
+    var METHOD_GET = "get";
+
+    //TODO: pasar por parametro client_id y client_secret
+    var CLIENT_ID = "restkinderapp";
+    var CLIENT_SECRET = "restkinderapp";
+
+    Polymer({
+        is: 'auth-service',
+
+        listeners: {
+            'on-request-auth': 'authRequestListener'
+        },
+
+        properties: {
+            url: {
+                type: String,
+                value: 'http://localhost:8080/KinderPharmaServer/'
+            },
+
+            authResponse: {
+                value: 'null',
+                expiration: 'Jun 4, 2015 11:40:59 PM',
+                tokenType: 'bearer',
+                refreshToken: {
+                    expiration: 'Jul 3, 2015 11:40:59 PM',
+                    value: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+                },
+                scope: [],
+                additionalInformation: {}
+            }
+
+        },
+
+        ready: function () {
+            console.log("<auth-service> ready");
+            console.log("<authStorage> initial value: " + JSON.stringify(this.$.authStorage.value));
+        },
+
+        onResponse: function (event, request) {
+
+            console.warn("onResponse request data: " + this.wsdata);
+            if(this.wsdata != null) {
+                try {
+                    console.log("Response : " + JSON.stringify(this.wsdata));
+                } catch (e) {
+                    console.error("Error reading response" + e.toString())
+                }
+
+                this.authResponse = this.wsdata;
+                this.$.authStorage.value = this.wsdata;
+
+                console.debug("firing event 'on-response-auth' from <auth-service> method: onReponse");
+                this.fire('on-response-auth', {
+                    success: true
+                }, {
+                    node: loginform
+                });
+
+            } else {
+                console.debug("firing event 'on-response-auth' from <auth-service> method: onResponse (failure)");
+                this.fire('on-response-auth', {
+                    success: false
+                }, {
+                    node: loginform
+                });
+            }
+        },
+
+        onError: function (event, error) {
+            console.error("ERR: " + error.error.message);
+            console.debug("firing event 'on-response-auth' from <auth-service> method: onError");
+            this.fire('on-response-auth', {
+                success: false
+            }, {
+                node: loginform
+            });
+        },
+
+        authRequestListener: function(event) {
+            console.debug("listening 'on-request-auth' from: " + event.srcElement.id);
+
+            this.authenticate(event.detail.username, event.detail.password);
+        },
+
+        authenticate: function (username, password) {
+
+            console.log("Entering <auth-service> authenticate for user: " + username);
+
+            var parameters = {};
+            parameters.grant_type = GRANT_TYPE_PASSWORD;
+            parameters.client_id = CLIENT_ID;
+            parameters.client_secret = CLIENT_SECRET;
+            parameters.username = username;
+            parameters.password = password;
+
+            this.$.ajax.url = this.url + "oauth/token";
+            this.$.ajax.method = "GET";
+            this.$.ajax.params = parameters;
+            this.$.ajax.generateRequest();
+        },
+
+        getAuthToken: function () {
+            return this.$.authStorage.value.value;
+        },
+
+        getAuthTokenData: function () {
+            return this.$.authStorage.value;
+        },
+
+        refreshToken: function () {
+            console.log("Entering <auth-service> refreshToken");
+
+            var parameters = {};
+            parameters.grant_type = GRANT_TYPE_REFRESH_TOKEN;
+            parameters.client_id = CLIENT_ID;
+            parameters.client_secret = CLIENT_SECRET;
+
+            if(this.authResponse != null && this.authResponse != 'null') {
+                console.debug("this.authResponse NO es null...");
+                parameters.refresh_token = this.authResponse.refreshToken.value;                
+            } else {
+                console.debug("Refreshing auth token with storaged value");
+                parameters.refresh_token = this.$.authStorage.value.refreshToken.value;
+            }
+
+            this.$.ajax.url = this.url + "oauth/token";
+            this.$.ajax.method = METHOD_GET;
+            this.$.ajax.params = parameters;
+            this.$.ajax.generateRequest();
+        }
+
+    });
+</script>

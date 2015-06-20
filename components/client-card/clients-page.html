@@ -1,0 +1,68 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html"><link rel="import" href="../../bower_components/paper-header-panel/paper-header-panel.html"><link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html"><link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html"><link rel="import" href="client-detail.html"><link rel="import" href="client-card.html"><link rel="import" href="client-service.html"><dom-module id="clients-page"><template><client-service id="clientService" wsdata="{{clients}}"></client-service><div id="container" style:"position:="" relative;"="" class="containerList" layout="" horizontal="" center=""><div id="detailContainer" style:"position:="" absolute;="" top:="" 25px;="" z-index:="" 2;"=""><client-detail id="clientDetail" clientid="{{selectedClient.id}}" name="{{selectedClient.name}}" contributortype="{{selectedClient.contributorType.shortname}}" cuit="{{selectedClient.cuit}}" address="{{selectedClient.address.address}}" province="{{selectedClient.address.province_id}}" section="{{selectedClient.address.section_id}}" locality="{{selectedClient.address.locality_id}}" district="{{selectedClient.address.district_id}}" attendant="{{selectedClient.attendant}}" consignmentmerchandise="{{selectedClient.consignment_merchandise}}" telephone="{{selectedClient.telephone}}" email="{{selectedClient.email}}" startdate="{{selectedClient.start_date}}" businesstype="{{selectedClient.businessType.id}}" enable="true"></client-detail><div id="editButton"><paper-fab icon="create" on-tap="edit"></paper-fab></div><div id="saveButton"><paper-fab icon="done" on-tap="save"></paper-fab></div><div id="goBackButton"><paper-fab icon="reply" on-tap="goBack"></paper-fab></div></div><div id="listContainer" style:"position:="" absolute;="" top:="" 25px;="" z-index:="" 1;"=""><template is="dom-repeat" items="{{clients}}" id="clientList"><paper-material elevation="1"><div class="row"><client-card name="[[item.name]]" address="[[item.address.address]]" province="[[item.address.province_id]]" attendant="[[item.attendant]]" telephone="[[item.telephone]]" email="[[item.email]]" on-tap="openClient"></client-card></div></paper-material></template><div id="addButton"><paper-fab icon="add" style="visibility: visible;" on-tap="addClient"></paper-fab></div></div></div></template><script>
+        Polymer({
+          is:'clients-page',
+          properties:{
+            clients:{
+              type: Object,
+              notify: true
+            }, 
+            selectedClient:{
+              type: Object,
+              notify: true
+            }, 
+            filterBox: String
+          },
+          ready:function(){
+            this.$.detailContainer.style.display = "none";
+            
+            this.$.clientService.getAll();
+          },
+          addClient: function(){
+            this.selectedClient = new Object();
+            
+            this.changeActiveDiv();
+            this.$.clientDetail.enableDisableInput();
+            this.$.goBackButton.style.visibility= "hidden";
+            this.$.saveButton.style.visibility = "visible";
+            this.$.addButton.style.visibility = "hidden";
+            this.$.editButton.style.visibility = "hidden";
+          },
+          openClient: function(e){
+            console.log("ENTERING - openClient");
+            this.selectedClient = this.$.clientList.itemForElement(e.target);
+            this.changeActiveDiv();
+            this.$.addButton.style.visibility = "hidden";
+            this.$.goBackButton.style.visibility= "hidden";
+            this.$.editButton.style.visibility = "visible"
+          }, 
+          edit:function(){
+            this.$.clientDetail.enableDisableInput();
+            this.$.editButton.style.visibility = "hidden";
+            this.$.goBackButton.style.visibility = "hidden";
+            this.$.saveButton.style.visibility = "visible";
+          }, 
+          save: function(){
+            console.log("ENTERING - save");
+            this.$.clientDetail.enableDisableInput();
+            this.$.editButton.style.visibility = "visible";
+            this.$.saveButton.style.visibility = "hidden";
+            this.$.clientService.save(this.selectedClient);
+            this.clients = this.clients.slice(); 
+          }, 
+          goBack: function(){
+            this.selectedClient = null;
+            this.changeActiveDiv();
+            this.$.goBackButton.style.visibility= "hidden";
+            this.$.addButton.style.visibility = "visible";
+          },
+          changeActiveDiv: function(){
+            if(this.$.detailContainer.style.display == "block"){
+              this.$.detailContainer.style.display = "none";
+              this.$.listContainer.style.display = "block";
+            }else{
+              this.$.detailContainer.style.display = "block";
+              this.$.listContainer.style.display = "none";
+            }
+          }
+        });
+      </script></dom-module>

@@ -1,0 +1,51 @@
+<!doctype html><html><head><script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script><link rel="import" href="../../../bower_components/polymer/polymer.html"><link rel="import" href="../../../bower_components/paper-button/paper-button.html"><link rel="import" href="../../../bower_components/paper-input/paper-input.html"><link rel="import" href="../../../bower_components/iron-input/iron-input.html"><link rel="import" href="../../../bower_components/iron-flex-layout/iron-flex-layout.html"><link rel="import" href="../auth-service/auth-service.html"><link rel="import" href="product-type-service.html"><link rel="stylesheet" href="../../../bower_components/paper-styles/paper-styles.html"><link rel="import" href="../../../bower_components/paper-styles/demo-pages.html"></head><body><style>
+        #quant {
+            width: 50px;
+        }
+    </style><template is="dom-bind" id="app"><auth-service id="auth"></auth-service><product-type-service id="productTypeService" all="{{productTypesList}}"></product-type-service><h1>product-type-service</h1><h3>* Ver consola CRTL + SHIFT + J (pendiente mostrar valores en pantalla)</h3><div class="vertical-section-container"><div class="horizontal-section-container"><div class="vertical-section-container"><div class="horizontal-section"><h4>Authenticate</h4><paper-input id="username" value="edunavarro" label="username"></paper-input><paper-input id="password" value="123456" label="password" type="password"></paper-input><paper-button raised="" icon="check" role="button" on-tap="getAuth">AUTHENTICATE</paper-button></div><div class="horizontal-section"><h4>Actions</h4><paper-button raised="" icon="check" role="button" on-tap="getProductTypes">GET PRODUCT TYPES</paper-button><paper-button raised="" icon="check" role="button" on-tap="removeValues">REMOVE FROM LIST</paper-button></div></div><div class="vertical-section"><h4>Put values... press CREATE/UPDATE button</h4><paper-input id="prodTypeId" label="Id" value="0"></paper-input><paper-input id="prodTypeName" label="Name" value="aTypeName"></paper-input><paper-input id="prodTypeDesc" label="Description" value="aTypeDescription"></paper-input><paper-input id="prodTypePos" label="Position" value="1"></paper-input><paper-input id="prodTypeEnable" label="Enable" value="1"></paper-input><paper-button raised="" role="button" on-tap="createProductType">CREATE/UPDATE</paper-button></div></div><h3>List of product types</h3><paper-inputid="quant" label="{{productTypesList.length}}" disabled=""><template is="dom-repeat" items="{{productTypesList}}"><div><span>{{item.id}}</span> <span>|</span> <span>{{item.name}}</span> <span>|</span> <span>{{item.description}}</span></div></template></paper-inputid="quant"></div></template><script>
+        var app = document.querySelector("#app");
+        var authenticationString = "No autenticado";
+
+        app.getAuth = function () {
+            console.debug("<auth-service>.authenticate()");
+            // Get access token for authenticate via user/password
+            
+            var username = this.$.username.value;
+            var password = this.$.password.value;
+            
+            app.$.auth.authenticate( username, password );
+        }
+
+        /// <product-type-service>.getAll()
+        app.getProductTypes = function () {
+            console.log("<product-type-service>.getAll()");
+            // Get access token for authorization
+            var accessToken = app.$.auth.getAuthToken();
+            // Get all product types.
+            app.$.productTypeService.getAll(accessToken);
+        }
+
+        app.removeValues = function () {
+            // Remove values from list // this method does not go to the server
+            this.$.productTypeService.all.pop();
+            this.$.productTypeService.all = this.$.productTypeService.all.slice();
+            console.warn("Removing object from productypes list. Remains:  " + JSON.stringify(app.productTypesList));
+        }
+
+        app.createProductType = function () {
+            console.log("<product-type-service>  createProductType");
+
+            // Creating object with selected values
+            var productTypeDTO = {};
+            productTypeDTO.id = this.$.prodTypeId.value;
+            productTypeDTO.name = this.$.prodTypeName.value;
+            productTypeDTO.description = this.$.prodTypeDesc.value;
+            productTypeDTO.position = this.$.prodTypePos.value;
+            productTypeDTO.enable = this.$.prodTypeEnable.value;
+
+            // Get access token for authorization
+            var accessToken = app.$.auth.getAuthToken();
+            // Call service save method to create or update a product type.
+            app.$.productTypeService.save(accessToken, productTypeDTO);
+        }
+    </script></body></html>

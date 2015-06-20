@@ -1,0 +1,26 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html"><link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html"><dom-module id="province-service"><template><iron-ajax id="ajaxPullWebService" handle-as="json" last-response="{{wsdata}}"></iron-ajax></template><script>
+
+  Polymer({
+    is: 'province-service', 
+    properties:{
+      wsdata:{ 
+        type: Object,
+      notify: true
+      }
+    },
+    ready: function(){
+      console.log("Loading province-service");
+    },
+    onResponse: function(request){
+      console.log( JSON.stringify(this.wsdata));
+    },
+    getAll: function(){
+      console.log("ENTERING - getProvinces");
+      this.$.ajaxPullWebService.url = URL + "/getProvinces";
+      this.$.ajaxPullWebService.method = "GET";
+      console.log("READY FOR CALL: " + this.$.ajaxPullWebService.url + " - METHOD: " + this.$.ajaxPullWebService.method);
+      this.$.ajaxPullWebService.generateRequest();
+    }
+  });
+  
+</script></dom-module>s

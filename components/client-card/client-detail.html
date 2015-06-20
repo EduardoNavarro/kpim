@@ -1,0 +1,85 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html"><link rel="import" href="../../bower_components/paper-input/paper-input.html"><link rel="import" href="../../bower_components/paper-toggle-button/paper-toggle-button.html"><link rel="import" href="../../bower_components/paper-fab/paper-fab.html"><link rel="import" href="../../bower_components/iron-icon/iron-icon.html"><link rel="import" href="../../bower_components/iron-icons/iron-icons.html"><link rel="import" href="../../bower_components/iron-iconset/iron-iconset.html"><link rel="import" href="../../bower_components/iron-iconset-svg/iron-iconset-svg.html"><dom-module id="client-detail"><template><div class="content"><div id="clientForm" style="position: relative;"><div class="formRow" layout="" horizontal="" center=""><paper-input id="txtName" class="item item-input" label="Nombre" value="{{name}}" disabled="" flex=""></paper-input></div><div class="formRow" layout="" horizontal="" center=""><paper-input id="txtContributorType" class="item item-input" label="Tipo de contribuyente" value="{{contributorType}}" disabled="" flex=""></paper-input></div><div class="formRow" layout="" horizontal="" center=""><paper-input id="txtCuit" class="item item-input" label="CUIT" value="{{cuit}}" disabled="" flex=""></paper-input></div><div class="formRow" layout="" horizontal="" center=""><div class="item item-icon"><iron-icon icon="icons:home"></iron-icon></div><paper-input id="txtAddress" class="item item-input" label="Dirección" value="{{address}}" disabled="" flex=""></paper-input><paper-input id="txtProvince" class="item item-input" label="Provincia" value="{{province}}" disabled="" flex=""></paper-input><paper-input id="txtSection" class="item item-input" label="Partido" value="{{section}}" disabled="" flex=""></paper-input><paper-input id="txtLocality" class="item item-input" label="Localidad" value="{{locality}}" disabled="" flex=""></paper-input><paper-input id="txtDistrict" class="item item-input" label="Barrio" value="{{district}}" disabled="" flex=""></paper-input></div><div class="formRow" layout="" horizontal="" center=""><div class="item item-icon"><iron-icon icon="icons:supervisor-account"></iron-icon></div><paper-input id="txtAttendant" class="item item-input" label="Responsable" value="{{attendant}}" disabled="" flex=""></paper-input></div><div class="formRow" layout="" horizontal="" center=""><div class="item item-icon"><iron-icon icon="icons:shopping-basket"></iron-icon></div><paper-input id="txtConsignmentMerchandise" class="item item-input" label="Mercadería en consignación" value="{{consignmentMerchandise}}" disabled="" flex=""></paper-input></div><div class="formRow" layout="" horizontal="" center=""><div class="item item-icon"><iron-icon icon="icons:settings-phone"></iron-icon></div><paper-input id="txtTelephone" class="item item-input" label="Teléfono" value="{{telephone}}" disabled="false" flex=""></paper-input></div><div class="formRow" layout="" horizontal="" center=""><div class="item item-icon"><iron-icon icon="icons:mail"></iron-icon></div><paper-input id="txtEmail" class="item item-input" label="e-Mail" value="{{email}}" disabled="" flex=""></paper-input></div><div class="formRow" layout="" horizontal="" center=""><div class="item item-icon"><iron-icon icon="icons:work"></iron-icon></div><paper-input id="txtBusinessType" class="item item-input" label="Tipo de comercio" value="{{businessType}}" disabled="" flex=""></paper-input></div><div class="formRow" layout="" horizontal="" center="">Activo<paper-toggle-button id="txtEnable" checked="{{enable}}"></paper-toggle-button></div></div></div></template><script>
+    Polymer({
+      is: 'client-detail',
+      properties: {
+        clientId:{
+          type:String,
+          notify: true
+        },
+        name:{
+          type: String,
+          notify: true
+        },
+        contributorType:{
+          type:String,
+          notify: true
+        },
+        cuit: {
+          type:String,
+          notify: true
+        },
+        address: {
+          type:String,
+          notify: true
+        },
+        province: {
+          type:String,
+          notify: true
+        }, 
+        section: {
+          type:String,
+          notify: true
+        }, 
+        locality: {
+          type:String,
+          notify: true
+        },
+        district: {
+          type:String,
+          notify: true
+        },
+        attendant: {
+          type:String,
+          notify: true
+        },
+        consignmentMerchandise: {
+          type:String,
+          notify: true
+        }, 
+        telephone: {
+          type:String,
+          notify: true
+        }, 
+        email: {
+          type:String,
+          notify: true
+        },
+        startDate: {
+          type:String,
+          notify: true
+        },
+        businessType: {
+          type:String,
+          notify: true
+        },
+        enable: {
+          type: Boolean,
+          notify: true
+        }
+      }, 
+      enableDisableInput: function(){
+        this.$.txtName.disabled = !this.$.txtName.disabled;
+        this.$.txtContributorType.disabled = !this.$.txtContributorType.disabled;
+        this.$.txtAddress.disabled = !this.$.txtAddress.disabled;
+        this.$.txtProvince.disabled = !this.$.txtProvince.disabled;
+        this.$.txtSection.disabled = !this.$.txtSection.disabled;
+        this.$.txtLocality.disabled = !this.$.txtLocality.disabled;
+        this.$.txtDistrict.disabled = !this.$.txtDistrict.disabled;
+        this.$.txtAttendant.disabled = !this.$.txtAttendant.disabled;
+        this.$.txtConsignmentMerchandise.disabled = !this.$.txtConsignmentMerchandise.disabled;
+        this.$.txtTelephone .disabled = !this.$.txtTelephone .disabled;
+        this.$.txtEmail.disabled = !this.$.txtEmail.disabled;
+        this.$.txtBusinessType.disabled = !this.$.txtBusinessType.disabled;
+      }
+    });
+  </script></dom-module>

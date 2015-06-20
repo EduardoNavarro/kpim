@@ -1,0 +1,49 @@
+<html><head><link rel="import" href="../bower_components/polymer/polymer.html"><link rel="import" href="services/post-service.html"><link rel="import" href="product-card.html"></head><body><dom-module id="product-crud"><template><style>
+        :host {
+          display: block;
+          width: 90%;
+        }
+        product-card {
+          margin-bottom: 6px;
+          padding-bottom: 6px;
+        }
+        
+        .container {
+          height:100%;
+          overflow:auto;
+        }
+        
+        core-toolbar#client-selection {
+          height: 36px;
+        }
+        
+        paper-fab {
+          position: fixed;
+          bottom: 16px;
+          right: 16px;
+          background-color: #ff4081;
+        }
+
+        .accept {
+          position: fixed;
+          bottom: 16px;
+          width:250px;
+          /*background-color: rgb(80, 173, 126);*/
+          background-color: #ff4081;
+        }
+      
+        </style><post-service id="service" posts="{{posts}}"></post-service><div id="containment" class="container" layout="" vertical="" center=""><template is="dom-repeat" items="{{posts}}"><product-card avatar="{{item.avatar}}" quantity="{{item.stock}}" productname="{{item.description}}" productcode="{{item.code}}" sellprice="{{item.sellPrice}}" on-tap="selectedProduct"></product-card></template><a href="#product-create" on-tap="newProduct"><paper-fab icon="add" role="button" noink=""></paper-fab></a></div></template><script>
+        var quantity = 0;
+        Polymer({is: "product-crud",
+  
+          selectedProduct: function(event, detail, sender) {
+            var product = sender.templateInstance.model.model;
+            console.log("Producto: " + product.description); 
+            this.fire('change-route', product);
+          },
+          newProduct: function(event, detail, sender) {
+            this.fire('change-route', null);
+          }
+          
+        });
+      </script></dom-module></body></html>

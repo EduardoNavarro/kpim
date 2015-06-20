@@ -1,0 +1,89 @@
+<html><head></head><body><dom-module id="product-order-card"><template><style shim-shadowdom="">
+		    :host {
+		      -webkit-tap-highlight-color: rgba(0,0,0,0);
+		      font-size: 1.2rem;
+		      font-weight: 300;
+		    }
+
+		    paper-fab {
+		      height:48px;
+		      width:48px;
+		      color: black;
+		      background: rgba(255, 255, 255, 1);
+		    }
+
+		    paper-input {
+		      width:50px;
+		    }
+
+		    #value {
+		      width: 40px;
+		      padding-top: 10px;
+		      font-size: 1.4rem;
+		      font-weight: 400;
+		      text-align: center;
+		    }
+
+		    .row {
+		      background:white;
+		      padding: 16px 16px;
+		      cursor: pointer;
+		    }
+		    .row iron-image {
+		      width: 64px;
+		      height: 64px;
+		      border-radius: 50%;
+		      /*background:rgb(226, 226, 226);*/
+		      background:rgb(214, 255, 64);
+		      font-weight:500;
+		      color:white;
+		    }
+		    
+		    .product-main-detail {
+		      margin-left: 16px;
+		    }
+		    
+		    .product-small-detail {
+		      font-size: 0.8rem;
+		      padding-top: 5px;
+		      font-weight: 600;
+		    }
+		    
+		    .numeric-container{
+		      display:none;
+		    }
+
+		    </style><div class="row" layout="" horizontal="" center=""><iron-image icon="add" src="{{avatar}}" preload="" sizing="cover"></iron-image><div class="product-main-detail" flex=""><div flex="">{{productName}}</div><div class="product-small-detail" flex="">Código: {{productCode}}</div><div class="product-small-detail" flex="">Precio: {{sellPrice}} $</div></div><div class="numeric-container" layout="" horizontal="" right=""><paper-fab role="button" icon="remove" id="paper_fab1" title="remove" on-tap="{{ decrement }}" horizontal="" layout="" center="" center-justified=""></paper-fab><div id="value" center-center="">{{quantity}}</div><paper-fab role="button" icon="add" id="paper_fab1" title="add" on-tap="{{ increment }}" horizontal="" layout="" center="" center-justified=""></paper-fab></div></div><content></content></template><script>
+
+		  Polymer({is: "product-order-card",
+		    properties: {
+		      			favorite: {
+		        				   value: false,
+		        				   reflect: true
+		      					   },
+		      			quantity: 0,
+					    avatar:'',
+					    productName:'',
+					    productCode:'',
+					    sellPrice:''
+		    		},
+		    favoriteTapped: function(event, detail, sender) {
+					      this.favorite = !this.favorite;
+					      this.fire('favorite-tap');
+					    },
+		    increment: function () {
+		      this.quantity++;
+		      console.log("avatarurl " + this.avatar); 
+		    },
+		    decrement: function () {
+				console.log("log test");
+				var template = document.querySelector('#t');
+				template.log();
+
+		      if(this.quantity > 0)
+		        this.quantity--;
+		    }
+		  });
+		  
+		    
+		  </script></dom-module></body></html>

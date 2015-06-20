@@ -1,0 +1,39 @@
+<html><head><script src="../../../bower_components/webcomponentsjs/webcomponents-lite.js"></script><link rel="import" href="../../../bower_components/polymer/polymer.html"><link rel="import" href="../../../bower_components/paper-button/paper-button.html"><link rel="import" href="auth-service.html"></head><body><template is="dom-bind" id="app"><auth-service id="authService" authresponse="{{pepe}}"></auth-service><h1>auth-service demo</h1><h10>* Ver consola CRTL + SHIFT + J (pendiente mostrar valores en pantalla)</h10><div flex="" center-center=""><paper-button raised="" icon="check" role="button" on-tap="authenticate">Authenticate</paper-button><paper-button raised="" icon="check" role="button" on-tap="refreshAuthToken">RefreshAuthToken</paper-button><paper-button raised="" icon="check" role="button" on-tap="getParamTest">GET PARAM TEST</paper-button><paper-button raised="" icon="check" role="button" on-tap="getAuthToken">GET AUTH TOKEN</paper-button><paper-button raised="" icon="check" role="button" on-tap="modifyTokenTest">Modif TOKEN</paper-button></div></template><script>
+        var app = document.querySelector("#app");
+
+        app.wsdata = "default";
+
+        /// Authenticate with <auth-service>
+        app.authenticate = function () {
+            console.log("Calling <auth-service> authenticate");
+            var username = "edunavarro";
+            var password = "123456";
+            app.$.authService.authenticate(username, password);
+        }
+
+        /// Refresh auth token <auth-service>
+        app.refreshAuthToken = function () {
+            console.log("Calling <auth-service> refreshAuthToken");
+            app.$.authService.refreshToken();
+        }
+
+        app.getAuthToken = function () {
+            console.log("getting auth token...");
+            var auth = app.$.authService.getAuthToken();
+            console.log("token: " + JSON.stringify(auth));
+        }
+
+        app.getParamTest = function () {
+            console.log("getting param test...");
+            var parameters = {}; //{"message":"este es un mensaje","other":"lalala"};
+            parameters.message = "Mensaje agregado dinamicamente";
+            parameters.other = "otro parametro agregado dinamicamente";
+            app.$.authService.params = parameters;
+            app.$.authService.paramsTest(parameters);
+        }
+        
+        app.modifyTokenTest = function () {
+            console.log("modifyTokenTest...");
+            app.$.authService.modifyToken();
+        }
+    </script></body></html>

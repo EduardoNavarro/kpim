@@ -1,0 +1,41 @@
+<dom-module id="product-type-form"><style shim="">
+
+    :host {
+      @apply(--layout-horizontal);
+    }
+
+    .toggle-container {
+      height: 32px;
+      padding: 16px;
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+    }
+
+    paper-toggle-button {
+      padding-right: 16px;
+    }
+
+  </style><template><paper-material papercard="" cardelevation="1"><paper-input id="prodTypeName" value="{{producttype.name}}" label="Nombre"></paper-input><paper-input id="prodTypeDescription" value="{{producttype.description}}" label="Descripcion"></paper-input><paper-input id="productTypePosition" value="{{producttype.position}}" label="Posicion"></paper-input><div class="toggle-container"><paper-toggle-button flex="" checked="{{producttype.enable}}"></paper-toggle-button><span flex="">Habilitado?</span></div></paper-material><paper-fab paperfab="" icon="{{icon}}"></paper-fab></template><script>
+  Polymer({
+    is: 'product-type-form',
+
+    properties: {
+        producttype: Object,
+        icon:"menu"
+    },
+
+    ready: function() {
+      this.setIcon();
+    },
+
+    setIcon: function() {
+      if(this.producttype == 'undefined' || this.producttype == null || this.producttype.id == 0)
+        this.icon = "done"
+      else
+        this.icon = "menu"
+    }
+
+
+  });
+
+</script></dom-module>

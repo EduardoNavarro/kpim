@@ -1,0 +1,96 @@
+<dom-module id="user-card"><style>
+
+	    :host {
+	      @apply(--layout-horizontal);
+	    }
+
+	    [item-l] {
+	      padding-left: 16px;
+	      @apply(--layout-horizontal);
+	      @apply(--layout-center);
+	      border-bottom: 1px solid #bbb;
+	    }
+
+	    [item] {
+	      padding-left: 16px;
+	      @apply(--layout-horizontal);
+	      @apply(--layout-center);
+	    }
+
+	    [vertical] {
+	      @apply(--layout-flex);
+	      @apply(--layout-vertical);
+	    }
+
+	    [horizontal] {
+	      @apply(--layout-horizontal);
+	    }
+
+	    [header] {
+	      height: 60px;
+	      background-color: #ccc;
+	      padding: 0 16px;
+	      @apply(--layout-horizontal);
+	      @apply(--layout-center);
+	    }
+
+	    [tool] {
+	      @apply(--layout-inline);
+	    }
+
+	    [flex] {
+	      @apply(--layout-flex);
+	    }
+
+	    [content] {
+	      @apply(--layout-flex);
+	      overflow: auto;
+	    }
+
+	    [card] {
+	      height: 300px;
+	      width: 300px;
+	      margin: 16px auto;
+	      background-color: #eee;
+	      @apply(--layout-vertical);
+	      @apply(--layout-center-center);
+	    }
+
+	    [circle] {
+	      height: 58px;
+	      width: 58px;
+	      border-radius: 50%;
+	      color:white;
+	      margin: 1px auto;
+	      background-color: #DDD;
+	      font-size: 2em;
+	      @apply(--layout-vertical);
+	      @apply(--layout-center-center);
+	    }
+
+	    [enabled] {
+	      background-color: var(--enabled-item-color);
+	    }
+
+	    [disabled] {
+	      background-color: var(--disabled-item-color);
+	    }
+
+  	</style><template><paper-material papercard="" elevation="1"><div horizontal=""><template is="dom-if" if="[[user.enable]]" restamp="true"><div circle="" enabled="">[[avatartext]]</div></template><template is="dom-if" if="[[!user.enable]]" restamp="true"><div circle="" disabled="">[[avatartext]]</div></template><div item="" flex="">[[user.username]]</div></div></paper-material></template><script>
+
+		Polymer({
+			is: 'user-card',
+			properties: {
+				user: Object,
+				avatartext: {
+					type: String,
+					computed: 'computeInitial(user.username)'
+				}
+			},
+			computeInitial: function(username){
+				return username.charAt(0).toUpperCase();
+			}
+
+		});
+
+	</script></dom-module>

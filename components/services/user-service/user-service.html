@@ -1,0 +1,80 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html"><link rel="import" href="../../../bower_components/iron-ajax/iron-ajax.html"><dom-module id="user-service"><template><iron-ajax id="ajaxPushWebService" handle-as="json" last-response="{{createduser}}" on-error="onSaveError" on-response="onSaveResponse" verbose="true"></iron-ajax><iron-ajax id="ajaxPullWebService" handle-as="json" last-response="{{wsdata}}"></iron-ajax></template></dom-module><script>
+  Polymer({
+    is: 'user-service', 
+    properties: {
+      wsdata:{
+        type: Object,
+        notify: true
+      },
+      createduser:{
+        type: Object,
+        notify: true
+      }
+    },
+    listeners: {
+      'save-user' : 'save',
+      'get-all-users' : 'getAll'
+    },
+    ready: function(){
+      console.log("Entering user-service");
+    },
+    onGetResponse: function(){
+      console.log(JSON.stringify(this.wsdata));
+    },
+    onSaveResponse: function(){
+      this.fire('user-saved', 
+                this.createduser, 
+                {node: userForm});
+    },
+    onSaveError: function(event,error){
+      var errorMsg = {};
+      if(error.request.xhr.response != null)
+        errorMsg = error.request.xhr.response.error;
+      else
+        errorMsg = error.error.detail;
+
+      this.fire('user-saved-error', 
+                errorMsg, 
+                {node: userForm});
+    },
+    save: function (request, accessToken) {
+      console.log("Entering saveUser")
+      this.$.ajaxPushWebService.body = JSON.stringify(request.detail);
+      this.$.ajaxPushWebService.contentType = "application/json"
+      this.$.ajaxPushWebService.url = URL + "/saveUser"
+      this.$.ajaxPushWebService.method = "POST";
+      var header = new Object();
+      header.Authorization = "bearer " + accessToken;
+      this.$.ajaxPushWebService.headers = header;
+      //this.$.ajaxPushWebService.headers = "{'Authorization', 'Bearer ' + accessToken}";
+      //this.$.ajaxPushWebService.headers ='{"Authorization": "Bearer e74af16b-5c01-49b9-8cb5-f03b432593cd"}'
+      this.$.ajaxPushWebService.verbose = true;
+      //this.$.ajaxPushWebService.headers = '{"X-Requested-With": "XMLHttpRequest"}';
+      //"Authorization: bearer " + accessToken;
+
+
+       //xhr.setRequestHeader("Authorization", "Bearer $token")
+      console.log("READY FOR CALL: " + this.$.ajaxPushWebService.url + " - METHOD: " + this.$.ajaxPushWebService.method);
+      console.log("USER: " + JSON.stringify(user));
+      this.$.ajaxPushWebService.generateRequest();
+    },
+    getAll: function(accessToken){
+      console.log("ENTERING - getUsers");
+      this.$.ajaxPullWebService.url = URL + "/getUsers";
+      this.$.ajaxPullWebService.params.access_token = accessToken;
+      this.$.ajaxPullWebService.method = "GET";
+      console.log("READY FOR CALL: " + this.$.ajaxPullWebService.url + " - METHOD: " + this.$.ajaxPullWebService.method);
+      this.$.ajaxPullWebService.generateRequest();
+    }, 
+    findById: function(userId){
+      console.log("ENTERING - userFindById");
+      this.$.ajaxPullWebService.url = URL + "/getUserById";
+      this.$.ajaxPullWebService.params.userId = userId;
+      this.$.ajaxPullWebService.method = "GET";
+      console.log("READY FOR CALL: " + this.$.ajaxPullWebService.url + " - METHOD: " + this.$.ajaxPullWebService.method);
+      console.log("USER:_ID " + JSON.stringify(userId));
+      this.$.ajaxPullWebService.generateRequest();
+    }
+
+  });
+</script>

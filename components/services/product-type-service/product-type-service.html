@@ -1,0 +1,88 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html"><link rel="import" href="../../../../bower_components/iron-ajax/iron-ajax.html"><link rel="import" href="../../../../bower_components/iron-localstorage/iron-localstorage.html"><dom-module id="product-type-service"><template><iron-ajax id="ajaxGetAll" handle-as="json" last-response="{{all}}" on-response="onGetAllResponse" on-error="onGetAllError"></iron-ajax><iron-ajax id="ajaxSave" handle-as="json" on-response="saveResponse" on-error="onSaveError"></iron-ajax><iron-localstorage id="productTypesStorage" name="products-localstorage" value="{{all}}"></iron-localstorage></template></dom-module><script>
+    Polymer({
+        is: 'product-type-service',
+        properties: {
+            url: {
+                type: String,
+                value: 'http://localhost:8080/KinderPharmaServer/WebServices/'
+            },
+
+            all: {
+                type: Object,
+                notify: true
+            }
+
+        },
+
+        ready: function () {
+            console.log("<product-type-service> ready");
+        },
+
+        // @WebService
+        // Get all product types
+        getAll: function (accessToken) {
+
+            if (this.$.productTypesStorage.value == null || this.$.productTypesStorage.value.lenght == 0) {
+                console.debug("localstorage: [product-types] cache MISS!");
+                console.log("Entering <product-type-service>.getAllProductTypes( " + accessToken + " )");
+                var param = {
+                    "access_token": accessToken
+                };
+
+                this.$.ajaxGetAll.url = this.url + "getProductTypes";
+                this.$.ajaxGetAll.method = "GET";
+                this.$.ajaxGetAll.params = param;
+                this.$.ajaxGetAll.generateRequest();
+            } else {
+                console.debug("localstorage: [product-types] cache HIT!");
+                this.all = this.$.productTypesStorage.value;
+                return this.all;
+            }
+        },
+
+        // @WebService
+        // Creates or Updates a product type
+        save: function (accessToken, productType) {
+            console.log("Entering <product-type-service>.save( " + accessToken + " )");
+            var param = {};
+            param.access_token = accessToken;
+            param.productType = JSON.stringify(productType);
+
+            this.$.ajaxSave.url = this.url + "saveProductType";
+            this.$.ajaxSave.method = "POST";
+            this.$.ajaxSave.params = param;
+            this.$.ajaxSave.generateRequest();
+
+            this.all.push(productType);
+            this.all = this.all.slice();
+
+        },
+
+        removeObject: function () {
+            this.all.pop();
+            this.all = this.all.slice();
+        },
+
+        // @on-response
+        onGetAllResponse: function (event, request) {
+            console.log("getAllProductTypes response: " + JSON.stringify(request.response));
+            this.all = request.response;
+        },
+
+        // @on-error
+        onGetAllError: function (event, response) {
+            console.error("getAllProductTypes: " + response.error.message);
+        },
+
+        // @on-response
+        saveResponse: function (event, request) {
+            console.log("productType save response... ");
+        },
+
+        // @on-error
+        onSaveError: function (event, response) {
+            console.error("onSaveError: " + response.error.message);
+        },
+
+    });
+</script>

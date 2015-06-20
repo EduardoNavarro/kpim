@@ -1,0 +1,23 @@
+<dom-module id="user-crud"><template><div list=""><template id="userList" is="dom-repeat" items="{{users}}" as="user" sort="_sortUsers"><user-card user="[[user]]" on-tap="getUser"></user-card></template></div><a data-route="user-form" href="/user-form/"><paper-fab paperfab="" class="fab" icon="add"></paper-fab></a></template><script>
+
+		Polymer({
+			is: 'user-crud',
+			properties: {
+				users: Object,
+				notify: true
+			},
+			getUser: function(e){
+				userId = this.$.userList.itemForElement(e.target).id;
+				page.redirect('/user-form/' + userId);
+			},
+			_sortUsers: function(a, b) {  
+			    if (a.username > b.username) {
+					return 1;
+				}
+				if (a.username < b.username) {
+					return -1;
+				}
+			}
+		});
+
+	</script></dom-module>

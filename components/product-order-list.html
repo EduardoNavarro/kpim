@@ -1,0 +1,38 @@
+<html><head><link rel="import" href="../bower_components/polymer/polymer.html"><link rel="import" href="services/post-service.html"><link rel="import" href="product-order-card.html"></head><body><dom-module id="product-order-list"><template><style>
+        :host {
+          display: block;
+          width: 100%;
+          height:100%;
+        }
+        product-order-card {
+          margin-bottom: 6px;
+          padding-bottom: 6px;
+        }
+        .container {
+          height:100%;
+        }
+        
+        core-toolbar#client-selection {
+          height: 36px;
+        }
+
+        .accept {
+          position: absolute;
+          bottom:16px;
+          right:16px;
+          background-color: #ff4081;
+          color:white;
+          font-weight:400;
+        }
+        
+        </style><post-service id="service" posts="{{posts}}"></post-service><div class="container" layout="" horizontal="" center=""><template is="dom-repeat" items="{{posts}}"><product-order-card avatar="{{item.avatar}}" quantity="{{item.stock}}" productname="{{item.description}}" productcode="{{item.code}}" sellprice="{{item.sellPrice}}"></product-order-card></template></div><div flex="" center-center=""><paper-fab class="accept" icon="check" role="button" noink=""></paper-fab></div></template><script>
+      var quantity = 0;
+      Polymer({ is:"product-order-list",
+
+        handleFavorite: function(event, detail, sender) {
+          var post = sender.templateInstance.model.description;
+          console.log("click on " + post.description)
+          //this.$.service.setFavorite(post.uid, post.favorite);
+        }
+      });
+      </script></dom-module></body></html>

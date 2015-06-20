@@ -1,0 +1,136 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html"><dom-module id="login-form"><style shim="">
+
+    :host {
+      @apply(--layout-horizontal);
+    }
+
+    [horizontal] {
+      @apply(--layout-horizontal);
+    }
+
+    [flex] {
+      @apply(--layout-flex);
+    }
+
+    paper-input {
+      padding-bottom: 8px;
+    }
+
+    .auth-button {
+      margin-top: 16px;
+      width: 100%;
+      background-color:var(--accent-color);
+      color: white;
+    }
+
+    .login-from {
+      height: 100%;
+      max-width: 400px;
+    }
+
+    .sized {
+      width: 128px;
+      height: 128px;
+      border-radius: 50%;
+      background-color: #ddd;
+    }
+
+    .image-mask {
+      padding-top: 32px;
+      padding-bottom: 32px;
+    }
+
+    paper-spinner {
+      width: 128px;
+      height: 128px;
+    }
+
+  </style><template><paper-material papercard="" class="login-from" papermat="" cardelevation="1"><div class="image-mask" flex="" horizontal=""><span flex=""></span><iron-image class="sized" sizing="cover" src="../../images/user.png"><paper-spinner id="spinner"></paper-spinner></iron-image><span flex=""></span></div><paper-input id="username_input" label="Usuario" required="" pattern="[a-zA-Z]*" error-message="Ingrese solamente letras" maxlength="50"></paper-input><paper-input id="password_input" label="Contraseña" type="password" required="" pattern="[a-zA-Z0-9]*" error-message="Ingrese solo caracteres alfanumericos" maxlength="50"></paper-input><paper-button id="authButton" class="auth-button" role="button" on-tap="requestAuth">Iniciar session</paper-button></paper-material></template><script>
+
+  Polymer({
+    is: 'login-form',
+
+    listeners: {
+      'on-response-auth': 'responseAuthenticationListener'
+    },
+
+    properties: {
+        username: String,
+        password:String,
+        successpath: String
+    },
+
+    ready: function() {
+      //TODO: esto debe pasarse por aprametro o usar un default
+      this.successPath = '/'
+    },
+
+    //Requests the auth via username and password to <auth-service>
+    requestAuth: function() {
+
+      if(!this.validateForm())
+        return;
+
+      //invalidate access to login button / starts spinner
+      this.invalidateFormAccess(true);
+
+      console.debug("firing event 'on-request-auth' from login-form.html");
+      this.fire('on-request-auth', 
+        {
+          username: this.$.username_input.value, 
+          password: this.$.password_input.value
+        }, 
+        {node: authService});
+    },
+
+    //Validates the form fields
+    validateForm: function() {
+      console.debug('username input valid: ' + this.$.username_input.validate());
+      console.debug('password input valid: ' + this.$.password_input.validate());
+        if(this.$.username_input.validate() 
+              && this.$.password_input.validate()) {
+          return true;
+        }
+        return false;
+    },
+
+    //Invalidates access to login button to prevent multiple requests.
+    invalidateFormAccess: function(disable) {
+        //Start/Stop spinner
+        this.$.spinner.active = disable;
+        //Disables de auth button
+        this.$.authButton.disabled = disable;
+    },
+
+    responseAuthenticationListener: function(e) {
+      console.debug("listening on-response-auth from: " + e.srcElement.id );
+
+      //invalidate access to login button / starts spinner
+      this.invalidateFormAccess(false);
+
+      var toastMessage = "";
+      if(e.detail.success) {
+        toastMessage = "Bienvenido " + this.$.username_input.value;
+        app.showToast(toastMessage);
+        this.redirectOnSuccess();
+      } else {
+        toastMessage = "Error obteniendo credenciales";
+        app.showToast(toastMessage);
+      }
+
+    },
+
+    //On authentication success redirects to the given route
+    redirectOnSuccess: function() {
+      //page.redirect( this.successPath );
+
+      console.debug("firing event 'on-change-route' from login-form.html" + this.successPath);
+      this.fire('on-change-route', 
+        {
+          path: this.successPath
+        }); 
+    }
+
+  });
+
+</script></dom-module>

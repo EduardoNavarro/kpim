@@ -1,0 +1,171 @@
+<dom-module id="user-form"><style shim="">
+
+	    :host {
+	      @apply(--layout-horizontal);
+	    }
+
+	    [item-l] {
+	      padding-left: 16px;
+	      @apply(--layout-horizontal);
+	      @apply(--layout-center);
+	      border-bottom: 1px solid #bbb;
+	    }
+
+	    [item] {
+	      padding-left: 16px;
+	      @apply(--layout-horizontal);
+	      @apply(--layout-center);
+	    }
+
+	    [vertical] {
+	      @apply(--layout-flex);
+	      @apply(--layout-vertical);
+	    }
+
+	    [horizontal] {
+	      @apply(--layout-horizontal);
+	    }
+
+	    [line] {
+	      height: 60px;
+	      /*background-color: #ccc;*/
+	      padding: 0 16px;
+	      @apply(--layout-horizontal);
+	      @apply(--layout-center);
+	    }
+
+	    [tool] {
+	      @apply(--layout-inline);
+	    }
+
+	    [flex] {
+	      @apply(--layout-flex);
+	    }
+
+	    [content] {
+	      @apply(--layout-flex);
+	      overflow: auto;
+	    }
+
+	    .toggle-container {
+	      height: 32px;
+	      padding: 16px;
+	      @apply(--layout-horizontal);
+	      @apply(--layout-center);
+	    }
+
+	    paper-toggle-button {
+	      padding-right: 16px;
+	    }
+
+  	</style><template><paper-material papercard="" cardelevation="1"><paper-spinner id="loadingSpinner" !active=""></paper-spinner><paper-input id="txtUsername" required="" auto-validate="" pattern="[a-zA-Z]*" error-message="Ingrese sólo letras en minúscula" value="{{user.username}}" label="Nombre de usuario"></paper-input><paper-input id="txtPassword" type="password" required="" auto-validate="" pattern="[a-zA-Z0-9]*" error-message="Ingrese letras o números" value="{{user.password}}" label="Contraseña"></paper-input><paper-input id="txtCommission" auto-validate="" pattern="(?!^0*$)(?!^0*\.0*$)^\d{1,2}(\.\d{1,2})|([0-9]{1,2}|[0-9]{1,2}\.0|[0-9]{1,2}\.00)?(100|100\.0|100\.00)?$" error-message="Ingrese números del 0 al 100" value="{{user.commission}}" label="Comisión"></paper-input><div id="roleContainer"><span flex="">Permiso de usuario</span><template is="dom-repeat" items="[[roles]]" as="role"><paper-item><paper-checkbox id="[[_computeCheckboxId(role.id)]]" value="[[role.id]]">[[role.description]]</paper-checkbox></paper-item></template></div><div class="toggle-container"><paper-toggle-button id="toggleEnabled" checked="{{user.enable}}"></paper-toggle-button><span flex="">Habilitado?</span></div><paper-fab paperfab="" class="fab" icon="{{icon}}" on-tap="btnAction"></paper-fab></paper-material></template><script>
+
+		Polymer({
+			is: 'user-form',
+			properties:{
+				user: Object,
+				roles: Object,
+				icon: String
+			},
+			listeners:{
+				'user-saved': '_userSaved',
+				'user-saved-error': '_userSavedError',
+				'new-user': '_newUser',
+				'open-user': '_openUser'
+			},
+			_newUser: function(){
+				this._initialize("newuser");
+
+
+			},
+			_openUser: function(event){
+				this.user=event.detail;
+				this._initialize("openuser");
+				this._setChkRoles();
+			},
+			_initialize: function(type){
+				if(type == "newuser"){
+					this.user=new Object();
+					this.icon="done";
+					this.$.loadingSpinner.active=false;
+					this._setIsNotEditable(false);
+
+				}else{
+					this.icon="create";
+					this.$.loadingSpinner.active=false;
+					this._setIsNotEditable(true);
+				}
+    		},
+    		_setIsNotEditable: function(disabled){
+    			for(i = 0; i < this.querySelectorAll('paper-input').length; i++){
+    				this.querySelectorAll('paper-input')[i].disabled = disabled;
+    			}
+    			for(i = 0; i < this.querySelectorAll('paper-checkbox').length; i++)
+    				this.querySelectorAll('paper-checkbox')[i].disabled = disabled;
+
+    			this.$.toggleEnabled.disabled=disabled;
+    		},
+    		_setChkRoles: function(){
+    			for(i = 0; i<this.user.roles.length; i++){
+    				id = this.user.roles[i];
+    				this.$$("#chkRole" + id.toString()).checked = true;
+    			}
+    		},
+			_userSaved: function(data){
+				this.user=data.detail;
+				app.updateUserList(data.detail);
+				this.icon = "create";
+				this.$.loadingSpinner.active = false;
+				this._setIsNotEditable(true);
+				//launch toast
+				var message = "Usuario guardado correctamente";
+				app.showToast(message);
+			},
+			_userSavedError: function(errorMsg){
+				this.$.loadingSpinner.active = false;
+				//launch toast
+				app.showToast(errorMsg.detail);
+			},
+			_computeCheckboxId: function(roleId){
+				var roleCheckBoxId = "chkRole" + roleId;
+				this.$.rolesCheckBoxId = new Array;
+				this.$.rolesCheckBoxId.push(roleCheckBoxId);
+				return roleCheckBoxId;
+			},
+			_formErrors: function(){
+ 				if(document.getElementById('txtUsername').validate() && document.getElementById('txtPassword').validate() && document.getElementById('txtCommission').validate()){
+ 					for(i = 0; i < this.querySelectorAll('paper-checkbox').length; i++){
+    					if(this.querySelectorAll('paper-checkbox')[i].checked === true)
+    						return '';
+    				}
+    				return 'Debe seleccionar al menos un permiso de usuario.';
+ 				}
+ 				else
+ 					return 'Hay campos obligatorios no completados';
+ 			},
+			btnAction: function(){
+				if(this.icon == "create"){
+					this._setIsNotEditable(false);
+					this.icon="done";
+				}else{
+					this.save();
+				}
+			},
+ 			save: function() {
+ 				var error = this._formErrors();
+				if(error === ''){
+					this.$.loadingSpinner.active = true;
+					this.user.roles = new Array();
+					for(i = 0; i < this.querySelectorAll('paper-checkbox').length; i++){
+    					if(this.querySelectorAll('paper-checkbox')[i].checked === true)
+    						this.user.roles.push(this.querySelectorAll('paper-checkbox')[i].id.toString().replace(/\D/g,''));
+					}
+					app.$.userService.save(this.user, 'e74af16b-5c01-49b9-8cb5-f03b432593cd');
+	 				//this.fire('save-user', this.user, {node: userService});	
+	 			}else{
+	 				app.showToast(error);
+	 			}
+     		}
+		});
+
+	</script></dom-module>
